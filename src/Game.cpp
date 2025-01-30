@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./Constants.h"
 #include "./Game.h"
+#include "../lib/glm/glm.hpp"
 
 Game::Game(){
     this->isRunning = false;
@@ -13,10 +14,8 @@ bool Game::IsRunning () const {
     return this->isRunning;
 }
 
-float projectilePosY = 0.0f;
-float projectilePosX = 0.0f;
-float projectileVelX = 0.05f;
-float projectileVelY = 0.05f;
+glm::vec2 projectilePos = glm::vec2(0.0f, 0.0f);
+glm::vec2 projectileVel = glm::vec2(5.0f, 5.0f);
 
 void Game::Initialize(int width, int height){
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -24,7 +23,7 @@ void Game::Initialize(int width, int height){
         return;
     }
     window = SDL_CreateWindow(
-        "BitchNigga",
+        "Null",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         width,
@@ -67,9 +66,25 @@ void Game::ProcessInput(){
 }
 
 void Game::Update(){
-    projectilePosX += projectileVelX;
-    projectilePosY += projectileVelY;
+    // Sets new ticks for the current frame to be used
+    // Wait until 16~ms has elapsed since last frame
+    int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks() - ticksLastFrame);
 
+    if (timeToWait > 0 && timeToWait <= FRAME_TARGET_TIME){
+        SDL_Delay(timeToWait);
+    }
+     
+    // Delta time = difference in ticks from last frame to seconds
+    float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+
+    deltaTime = (deltaTime > 0.05f) ? 0.05f : deltaTime;
+    
+    std::cout << projectilePos.x << " " << projectilePos.y << " vel: " << projectileVel.x << " delta: " << deltaTime << std::endl;
+
+
+    ticksLastFrame = SDL_GetTicks();
+
+    projectilePos = glm::vec2(projectilePos.x + projectileVel.x * deltaTime, projectilePos.y + projectileVel.y * deltaTime);
 }
 
 void Game::Render(){
@@ -79,11 +94,12 @@ void Game::Render(){
     SDL_RenderClear(renderer);
 
     SDL_Rect projectile{
-        (int) projectilePosX,
-        (int) projectilePosY,
+        (int) projectilePos.x,
+        (int) projectilePos.y,   
         10,
         10
     };
+
     //prep color
     SDL_SetRenderDrawColor(renderer,2,255,255,255);
     //Paint Rectangle with projectile struct dimentions
