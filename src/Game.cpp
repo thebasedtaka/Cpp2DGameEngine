@@ -2,6 +2,11 @@
 #include "./Constants.h"
 #include "./Game.h"
 #include "../lib/glm/glm.hpp"
+#include "EntityManager.h"
+#include "./components/TransformComponent.h"
+
+EntityManager manager;
+SDL_Renderer* Game::renderer;
 
 Game::Game(){
     this->isRunning = false;
@@ -13,9 +18,6 @@ Game::~Game(){
 bool Game::IsRunning () const {
     return this->isRunning;
 }
-
-glm::vec2 projectilePos = glm::vec2(0.0f, 0.0f);
-glm::vec2 projectileVel = glm::vec2(5.0f, 5.0f);
 
 void Game::Initialize(int width, int height){
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -41,9 +43,24 @@ void Game::Initialize(int width, int height){
         isRunning = false;
         return;
     }
+    LoadLevel(0);
 
     isRunning = true;
     return;
+}
+
+void Game::LoadLevel(int levelNumber){
+    std::cout << "Level loaded" << std::endl;
+    Entity& projectile(manager.AddEntity("projectile"));
+    projectile.AddComponent<TransformComponent>(643,6,20,20,32,32,1);
+    Entity& projectile1(manager.AddEntity("projectile1"));
+    projectile1.AddComponent<TransformComponent>(0,0,20,20,32,32,1);
+    Entity& projectile2(manager.AddEntity("projectile2"));
+    projectile2.AddComponent<TransformComponent>(425,24,-20,-24,63,722,1);
+    Entity& projectile3(manager.AddEntity("projectile3"));
+    projectile3.AddComponent<TransformComponent>(643,566,-240,-520,32,32,1);
+    Entity& projectile4(manager.AddEntity("projectile4"));
+    projectile4.AddComponent<TransformComponent>(175,175,-20,-266,32,32,1);
 }
 
 void Game::ProcessInput(){
@@ -79,12 +96,9 @@ void Game::Update(){
 
     deltaTime = (deltaTime > 0.05f) ? 0.05f : deltaTime;
     
-    std::cout << projectilePos.x << " " << projectilePos.y << " vel: " << projectileVel.x << " delta: " << deltaTime << std::endl;
-
-
     ticksLastFrame = SDL_GetTicks();
 
-    projectilePos = glm::vec2(projectilePos.x + projectileVel.x * deltaTime, projectilePos.y + projectileVel.y * deltaTime);
+    manager.Update(deltaTime);
 }
 
 void Game::Render(){
@@ -92,18 +106,14 @@ void Game::Render(){
     SDL_SetRenderDrawColor(renderer,21,21,21,255);
     //Paint background
     SDL_RenderClear(renderer);
-
-    SDL_Rect projectile{
-        (int) projectilePos.x,
-        (int) projectilePos.y,   
-        10,
-        10
-    };
-
     //prep color
-    SDL_SetRenderDrawColor(renderer,2,255,255,255);
-    //Paint Rectangle with projectile struct dimentions
-    SDL_RenderFillRect(renderer, &projectile);
+    
+    if (manager.hasNoEntities()){
+        return;
+    }
+
+    manager.Render();
+    manager.GetEntities();
     //update
     SDL_RenderPresent(renderer);
 }
