@@ -9,6 +9,7 @@ EntityManager manager;
 SDL_Renderer* Game::renderer;
 
 Game::Game(){
+    //Sets Game to not running once it is created
     this->isRunning = false;
 }
 
@@ -20,10 +21,12 @@ bool Game::IsRunning () const {
 }
 
 void Game::Initialize(int width, int height){
+    //Initialize SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
         std::cerr << "Error initializing SDL." << std::endl;
         return;
     }
+    //Create window with SDL
     window = SDL_CreateWindow(
         "Null",
         SDL_WINDOWPOS_CENTERED,
@@ -36,13 +39,14 @@ void Game::Initialize(int width, int height){
         std::cerr << "Error creating SDL window" << std::endl;
         return;
     }
-    // -1 set default 
+    // creates a renderer for the window -1 set default 
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer){
         std::cerr << "Error creating SDL renderer" << std::endl;
         isRunning = false;
         return;
     }
+    
     LoadLevel(0);
 
     isRunning = true;
@@ -61,16 +65,22 @@ void Game::LoadLevel(int levelNumber){
     projectile3.AddComponent<TransformComponent>(643,566,-240,-520,32,32,1);
     Entity& projectile4(manager.AddEntity("projectile4"));
     projectile4.AddComponent<TransformComponent>(175,175,-20,-266,32,32,1);
+    manager.GetEntities();
 }
 
 void Game::ProcessInput(){
+    //Creates and stores event information
     SDL_Event event;
     SDL_PollEvent(&event);
+
+    //Exit conditions
     switch (event.type){
+        //Close button
         case SDL_QUIT:{
             isRunning = false;
             break;
         }
+        //Escape Key
         case SDL_KEYDOWN:{
             if (event.key.keysym.sym == SDLK_ESCAPE){
                 isRunning = false;
@@ -103,7 +113,7 @@ void Game::Update(){
 
 void Game::Render(){
     //Prep color
-    SDL_SetRenderDrawColor(renderer,21,21,21,255);
+    SDL_SetRenderDrawColor(renderer,99,21,21,255);
     //Paint background
     SDL_RenderClear(renderer);
     //prep color
@@ -113,7 +123,6 @@ void Game::Render(){
     }
 
     manager.Render();
-    manager.GetEntities();
     //update
     SDL_RenderPresent(renderer);
 }

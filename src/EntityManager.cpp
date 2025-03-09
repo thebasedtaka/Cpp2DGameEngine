@@ -32,7 +32,9 @@ Entity& EntityManager::AddEntity(std::string entityName){
 std::vector<Entity*> EntityManager::GetEntities() const{
         for (auto& entity:entities){
             std::cout << "Entity Name: " << entity->name << std::endl;
+            entity->ListAllComponents();
         }
+        return entities;
 }
 
 unsigned int EntityManager::GetEntityCount(){

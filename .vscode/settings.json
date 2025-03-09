@@ -70,6 +70,8 @@
     "span": "cpp",
     "text_encoding": "cpp",
     "cinttypes": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "typeindex": "cpp",
+    "map": "cpp"
   }
 }
