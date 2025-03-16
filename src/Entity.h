@@ -7,9 +7,12 @@
 #include <typeindex>
 #include "./EntityManager.h"
 #include "./Component.h"
+#include <iostream>
 
 class Component;
 class EntityManager;
+
+//Methods that manage specific entities
 
 class Entity {
     private:
@@ -39,5 +42,12 @@ class Entity {
         T* GetComponent(){
             return static_cast<T*>(componentTypeMap[std::type_index(typeid(T))]);
         }
+        template <typename T>
+        bool HasComponent() const{
+            bool state = componentTypeMap.find(std::type_index(typeid(T))) != componentTypeMap.end();
+           
+            return state;
+        }
 };
+
 #endif

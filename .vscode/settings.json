@@ -72,6 +72,9 @@
     "cinttypes": "cpp",
     "variant": "cpp",
     "typeindex": "cpp",
-    "map": "cpp"
+    "map": "cpp",
+    "bitset": "cpp",
+    "forward_list": "cpp",
+    "sstream": "cpp"
   }
 }

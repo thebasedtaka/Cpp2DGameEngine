@@ -7,7 +7,7 @@ void EntityManager::ClearData(){
     }
 }
 
-bool EntityManager::hasNoEntities(){
+bool EntityManager::HasNoEntities(){
     return entities.size() == 0;
 }
 
@@ -40,3 +40,4 @@ std::vector<Entity*> EntityManager::GetEntities() const{
 unsigned int EntityManager::GetEntityCount(){
     return entities.size();
 }
+

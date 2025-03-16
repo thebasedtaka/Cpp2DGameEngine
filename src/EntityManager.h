@@ -5,8 +5,8 @@
 #include "./Component.h"
 #include <vector>
 
-class EntityManager
-{
+//Methods that affect all rendered entities
+class EntityManager{
 private:
     std::vector<Entity*> entities;
 public:
@@ -14,7 +14,7 @@ public:
     void Update(float deltaTime);
     void Render();
     //Check if Entities exist
-    bool hasNoEntities();
+    bool HasNoEntities();
     Entity& AddEntity(std::string entityName);
     std::vector<Entity*> GetEntities() const;
     unsigned int GetEntityCount();
